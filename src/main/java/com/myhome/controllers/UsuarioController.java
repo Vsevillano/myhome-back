@@ -1,4 +1,4 @@
-package com.myhome.controller;
+package com.myhome.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.myhome.model.Usuario;
+import com.myhome.models.Usuario;
 import com.myhome.repository.UsuarioRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -63,7 +63,7 @@ public class UsuarioController {
   @PostMapping("/usuarios")
   public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
     try {
-    	Usuario _usuario = usuarioRepository.save(new Usuario(usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(), false));
+    	Usuario _usuario = usuarioRepository.save(new Usuario(usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(), usuario.getIsActivo()));
       return new ResponseEntity<>(_usuario, HttpStatus.CREATED);
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -78,7 +78,7 @@ public class UsuarioController {
       Usuario _usuario = usuarioData.get();
       _usuario.setNombre(usuario.getNombre());
       _usuario.setApellidos(usuario.getApellidos());
-      _usuario.setActivo(usuario.isActivo());
+      _usuario.setActivo(usuario.getIsActivo());
       return new ResponseEntity<>(usuarioRepository.save(_usuario), HttpStatus.OK);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);

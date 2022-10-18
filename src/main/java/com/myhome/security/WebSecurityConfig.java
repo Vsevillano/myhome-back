@@ -18,6 +18,7 @@ import com.myhome.security.jwt.AuthEntryPointJwt;
 import com.myhome.security.jwt.AuthTokenFilter;
 import com.myhome.security.services.UserDetailsServiceImpl;
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(

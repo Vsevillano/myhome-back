@@ -30,6 +30,11 @@ public class Lista {
 		this.nombre = nombre;
 	}
 
+	public Lista(String nombre, Set<Producto> productos) {
+		this.nombre = nombre;
+		this.productos = productos;
+	}
+
 	public String getId() {
 		return id;
 	}

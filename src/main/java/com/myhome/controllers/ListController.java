@@ -1,8 +1,10 @@
 package com.myhome.controllers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.myhome.models.Lista;
+import com.myhome.models.Producto;
+import com.myhome.models.Role;
+import com.myhome.payload.request.ListaRequest;
 import com.myhome.repository.ListRepository;
+import com.myhome.repository.ProductoRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -28,6 +35,9 @@ public class ListController {
 
   @Autowired
   ListRepository listRepository;
+  
+  @Autowired
+  ProductoRepository productoRepository;
 
   @GetMapping("/listas")
   public ResponseEntity<List<Lista>> getAllListas(@RequestParam(required = false) String nombre) {
@@ -71,12 +81,26 @@ public class ListController {
   }
 
   @PutMapping("/listas/{id}")
-  public ResponseEntity<Lista> updateLista(@PathVariable("id") String id, @RequestBody Lista lista) {
+  public ResponseEntity<Lista> updateLista(@PathVariable("id") String id, @RequestBody ListaRequest lista) {
     Optional<Lista> listaData = listRepository.findById(id);
-
+    
+    
     if (listaData.isPresent()) {
       Lista _lista = listaData.get();
-      _lista.setNombre(lista.getNombre());           
+      _lista.setNombre(lista.getNombre());  
+      
+	  Set<String> strProductos = lista.getProductos();
+	  Set<Producto> productos = new HashSet<>();
+      
+	  strProductos.forEach(producto -> {		
+			Producto _producto = productoRepository.findByNombre(producto);				
+			productos.add(_producto);		
+	  });
+		      
+      _lista.setProductos(productos);
+      
+      
+          
       return new ResponseEntity<>(listRepository.save(_lista), HttpStatus.OK);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -35,10 +35,10 @@ public class ProductoController {
     try {
       List<Producto> productos = new ArrayList<Producto>();
 
-      if (nombre == null)
-        productoRepository.findAll().forEach(productos::add);
-      else
-    	  productoRepository.findByNombre(nombre).forEach(productos::add);
+//      if (nombre == null)
+//        productoRepository.findAll().forEach(productos::add);
+//      else
+//    	  productoRepository.findByNombre(nombre).forEach(productos::add);
 
       if (productos.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

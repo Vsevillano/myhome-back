@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.myhome.models.Lista;
 import com.myhome.models.Producto;
-import com.myhome.models.Role;
 import com.myhome.payload.request.ListaRequest;
 import com.myhome.repository.ListRepository;
 import com.myhome.repository.ProductoRepository;
@@ -83,13 +82,13 @@ public class ListController {
   @PutMapping("/listas/{id}")
   public ResponseEntity<Lista> updateLista(@PathVariable("id") String id, @RequestBody ListaRequest lista) {
     Optional<Lista> listaData = listRepository.findById(id);
-    
-    
+        
     if (listaData.isPresent()) {
       Lista _lista = listaData.get();
       _lista.setNombre(lista.getNombre());  
       
 	  Set<String> strProductos = lista.getProductos();
+	  
 	  Set<Producto> productos = new HashSet<>();
       
 	  strProductos.forEach(producto -> {		

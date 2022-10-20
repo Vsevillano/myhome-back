@@ -34,12 +34,9 @@ public class ProductoController {
   public ResponseEntity<List<Producto>> getAllProductos(@RequestParam(required = false) String nombre) {
     try {
       List<Producto> productos = new ArrayList<Producto>();
-
-//      if (nombre == null)
-//        productoRepository.findAll().forEach(productos::add);
-//      else
-//    	  productoRepository.findByNombre(nombre).forEach(productos::add);
-
+      
+      productoRepository.findAll().forEach(productos::add);
+      
       if (productos.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }

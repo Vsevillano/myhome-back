@@ -61,7 +61,7 @@ public class TareaController {
   }
 
   @PostMapping("/tareas")
-  public ResponseEntity<Tarea> createTarea(@RequestBody Tarea tarea) {
+  public ResponseEntity<Tarea> createTarea(@RequestBody Tarea tarea) {	
     try {
     	Tarea _tarea = tareaRepository.save(new Tarea(tarea.getNombre(), tarea.getCategoria(), tarea.getDescripcion(), tarea.getFecha(), tarea.getEstado()));
       return new ResponseEntity<>(_tarea, HttpStatus.CREATED);

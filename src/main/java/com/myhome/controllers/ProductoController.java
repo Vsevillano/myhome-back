@@ -22,7 +22,7 @@ import com.myhome.models.Producto;
 
 import com.myhome.repository.ProductoRepository;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class ProductoController {

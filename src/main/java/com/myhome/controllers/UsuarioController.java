@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.myhome.models.Usuario;
 import com.myhome.repository.UsuarioRepository;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class UsuarioController {

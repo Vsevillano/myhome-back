@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.myhome.models.Tutorial;
 import com.myhome.repository.TutorialRepository;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class TutorialController {

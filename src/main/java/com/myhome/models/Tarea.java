@@ -1,6 +1,9 @@
 package com.myhome.models;
 
+import java.util.Optional;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "tareas")
@@ -13,17 +16,21 @@ public class Tarea {
 	private String descripcion;
 	private String fecha;
 	private String estado;
+	
+	
+	private String user;
 		
 	public Tarea() {		
 	}
 
-	public Tarea(String nombre, String categoria, String descripcion, String fecha, String estado) {
+	public Tarea(String nombre, String categoria, String descripcion, String fecha, String estado, String user) {
 		super();
 		this.nombre = nombre;
 		this.categoria = categoria;
 		this.descripcion = descripcion;
 		this.fecha = fecha;
 		this.estado = estado;
+		this.user = user;
 	}
 
 	public String getId() {
@@ -73,11 +80,22 @@ public class Tarea {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
+		
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
 
 	@Override
 	public String toString() {
-		return "Tarea [nombre=" + nombre + ", categoria=" + categoria + ", descripcion=" + descripcion + ", fecha="
-				+ fecha + ", estado=" + estado + "]";
+		return "Tarea [id=" + id + ", nombre=" + nombre + ", categoria=" + categoria + ", descripcion=" + descripcion
+				+ ", fecha=" + fecha + ", estado=" + estado + ", user=" + user + "]";
 	}
+
+
 
 }

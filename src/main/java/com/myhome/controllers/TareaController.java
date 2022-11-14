@@ -61,11 +61,34 @@ public class TareaController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+  
+  @GetMapping("/tareas/user/{id}")
+  public ResponseEntity<List<Tarea>> getTareaByUserId(@PathVariable("id") String id) {
+  
+    try {
+        List<Tarea> tareas = new ArrayList<Tarea>();
+        
+        for (Tarea tarea: tareaRepository.findAll()) {
+        	
+        	if (tarea.getUser().toString().equals(id.toString())) {
+        		tareas.add(tarea);
+        	}
+        }
+              	       
+        if (tareas.isEmpty()) {
+          return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
-  @PostMapping("/tareas")
+        return new ResponseEntity<>(tareas, HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+  }
+
+  @PostMapping("/tareas")  
   public ResponseEntity<Tarea> createTarea(@RequestBody Tarea tarea) {	
     try {
-    	Tarea _tarea = tareaRepository.save(new Tarea(tarea.getNombre(), tarea.getCategoria(), tarea.getDescripcion(), tarea.getFecha(), tarea.getEstado()));
+    	Tarea _tarea = tareaRepository.save(new Tarea(tarea.getNombre(), tarea.getCategoria(), tarea.getDescripcion(), tarea.getFecha(), tarea.getEstado(), tarea.getUser()));
       return new ResponseEntity<>(_tarea, HttpStatus.CREATED);
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

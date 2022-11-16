@@ -106,6 +106,7 @@ public class TareaController {
     	_tarea.setDescripcion(tarea.getDescripcion());
     	_tarea.setFecha(tarea.getFecha());
     	_tarea.setEstado(tarea.getEstado());
+    	_tarea.setUser(tarea.getUser());
       return new ResponseEntity<>(tareaRepository.save(_tarea), HttpStatus.OK);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);

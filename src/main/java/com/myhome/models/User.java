@@ -18,12 +18,24 @@ public class User {
 
 	@NotBlank
 	@Size(max = 20)
+	private String nombre;
+	
+	@NotBlank
+	@Size(max = 20)
+	private String apellidos;
+	
+	@NotBlank
+	@Size(max = 20)
 	private String username;
 
 	@NotBlank
 	@Size(max = 50)
 	@Email
 	private String email;
+	
+	@NotBlank
+	@Size(max = 20)
+	private String telefono;
 
 	@NotBlank
 	@Size(max = 120)
@@ -35,9 +47,12 @@ public class User {
 	public User() {
 	}
 
-	public User(String username, String email, String password) {
+	public User(String nombre, String apellidos, String username, String email, String telefono, String password) {
+		this.nombre = nombre;
+		this.apellidos = apellidos;
 		this.username = username;
 		this.email = email;
+		this.telefono = telefono;
 		this.password = password;
 	}
 
@@ -80,4 +95,36 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getApellidos() {
+		return apellidos;
+	}
+
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", username=" + username
+				+ ", email=" + email + ", telefono=" + telefono + ", password=" + password + ", roles=" + roles + "]";
+	}
+	
+	
 }

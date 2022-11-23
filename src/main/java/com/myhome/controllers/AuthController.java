@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,16 +21,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myhome.excpetion.TokenRefreshException;
 import com.myhome.models.ERole;
+import com.myhome.models.RefreshToken;
 import com.myhome.models.Role;
 import com.myhome.models.User;
 import com.myhome.payload.request.LoginRequest;
 import com.myhome.payload.request.SignupRequest;
+import com.myhome.payload.request.TokenRefreshRequest;
 import com.myhome.payload.response.JwtResponse;
 import com.myhome.payload.response.MessageResponse;
+import com.myhome.payload.response.TokenRefreshResponse;
 import com.myhome.repository.RoleRepository;
 import com.myhome.repository.UserRepository;
 import com.myhome.security.jwt.JwtUtils;
+import com.myhome.security.services.RefreshTokenService;
 import com.myhome.security.services.UserDetailsImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -53,30 +57,43 @@ public class AuthController {
 	@Autowired
 	JwtUtils jwtUtils;
 
+	@Autowired
+	RefreshTokenService refreshTokenService;
+
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-		
-		Authentication authentication = null;
-		
-		try {
-			authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-		} catch (AuthenticationException e) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Usuario o contraseña incorrectos"));
-		}
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-		
-		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
 
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+		String jwt = jwtUtils.generateJwtToken(userDetails);
+
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 
-		return ResponseEntity.ok(
-				new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
+		return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
+				userDetails.getUsername(), userDetails.getEmail(), roles));
+	}
+
+	@PostMapping("/refreshtoken")
+	public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+		String requestRefreshToken = request.getRefreshToken();
+		
+		
+		System.out.println(refreshTokenService.findByToken(requestRefreshToken));
+
+		return refreshTokenService.findByToken(requestRefreshToken).map(refreshTokenService::verifyExpiration)
+				.map(RefreshToken::getUser).map(user -> {
+					String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+					return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+				})
+				.orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
 	}
 
 	@PostMapping("/signup")
@@ -90,8 +107,8 @@ public class AuthController {
 		}
 
 		// Create new user's account
-		User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
-				encoder.encode(signUpRequest.getPassword()));
+		User user = new User(signUpRequest.getNombre(), signUpRequest.getApellidos(), signUpRequest.getUsername(),
+				signUpRequest.getEmail(), signUpRequest.getTelefono(), encoder.encode(signUpRequest.getPassword()));
 
 		Set<String> strRoles = signUpRequest.getRoles();
 		Set<Role> roles = new HashSet<>();
@@ -120,9 +137,8 @@ public class AuthController {
 				}
 			});
 		}
-
 		user.setRoles(roles);
-		
+
 		return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
 	}
 }

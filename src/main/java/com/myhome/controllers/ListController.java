@@ -98,9 +98,7 @@ public class ListController {
 			productos.add(_producto);		
 	  });
 		      
-      _lista.setProductos(productos);
-      
-      
+      _lista.setProductos(productos);      
           
       return new ResponseEntity<>(listRepository.save(_lista), HttpStatus.OK);
     } else {

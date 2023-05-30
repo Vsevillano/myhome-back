@@ -10,4 +10,6 @@ public interface UsuarioRepository extends MongoRepository<Usuario, String> {
 	List<Usuario> findByActivo(boolean activo);
 
 	List<Usuario> findByNombre(String nombre);
+	
+	Usuario findByEmail(String email);
 }

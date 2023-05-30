@@ -86,29 +86,24 @@ public class TareaController {
   }
 
   @PostMapping("/tareas")  
-  public ResponseEntity<List<Tarea>> createTarea(@RequestBody Tarea tarea) {	
-  
-    
-    try {
-    	Tarea _tarea = tareaRepository.save(new Tarea(tarea.getNombre(), tarea.getCategoria(), tarea.getDescripcion(), tarea.getFecha(), tarea.getEstado(), tarea.getUser()));
-
-        List<Tarea> tareas = new ArrayList<Tarea>();
-        
-        for (Tarea tarea_a: tareaRepository.findAll()) {
-        	
-        	
-        		tareas.add(tarea_a);
-        	
-        }
-              	       
-        if (tareas.isEmpty()) {
-          return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(tareas, HttpStatus.OK);
-      } catch (Exception e) {
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+  public ResponseEntity<List<Tarea>> createTarea(@RequestBody Tarea tarea) {	    
+	try {
+		tareaRepository.save(new Tarea(tarea.getNombre(), tarea.getCategoria(), tarea.getDescripcion(), tarea.getFecha(), tarea.getEstado(), tarea.getUser()));
+	
+	    List<Tarea> tareas = new ArrayList<Tarea>();
+	    
+	    for (Tarea tarea_a: tareaRepository.findAll()) {       	        
+	    		tareas.add(tarea_a);        	
+	    }
+	          	       
+	    if (tareas.isEmpty()) {
+	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	    }
+	
+	    return new ResponseEntity<>(tareas, HttpStatus.OK);
+	  } catch (Exception e) {
+	    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	  }
   }
 
   @PutMapping("/tareas/{id}")

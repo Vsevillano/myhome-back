@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.myhome.models.Producto;
-
+import com.myhome.models.Tarea;
 import com.myhome.repository.ProductoRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -61,10 +61,20 @@ public class ProductoController {
   }
 
   @PostMapping("/productos")
-  public ResponseEntity<Producto> createProducto(@RequestBody Producto producto) {
+  public ResponseEntity<List<Producto>> createProducto(@RequestBody Producto producto) {
     try {
     	Producto _producto = productoRepository.save(new Producto(producto.getNombre()));
-      return new ResponseEntity<>(_producto, HttpStatus.CREATED);
+	    List<Producto> productos = new ArrayList<Producto>();
+	    
+	    for (Producto producto_a: productoRepository.findAll()) {       	        
+	    		productos.add(producto_a);        	
+	    }
+	          	       
+	    if (productos.isEmpty()) {
+	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	    }
+	
+	    return new ResponseEntity<>(productos, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }

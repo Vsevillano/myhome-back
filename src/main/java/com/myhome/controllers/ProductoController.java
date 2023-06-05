@@ -96,17 +96,26 @@ public class ProductoController {
 
   @DeleteMapping("/productos/{id}")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-  public ResponseEntity<HttpStatus> deleteProducto(@PathVariable("id") String id) {
+  public ResponseEntity<List<Producto>>  deleteProducto(@PathVariable("id") String id) {
     try {
     	productoRepository.deleteById(id);
-      return new ResponseEntity<>(HttpStatus.OK);
+	    List<Producto> productos = new ArrayList<Producto>();
+	    
+	    for (Producto producto_a: productoRepository.findAll()) {       	        
+	    		productos.add(producto_a);        	
+	    }
+	          	       
+	    if (productos.isEmpty()) {
+	      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+	    }
+	    return new ResponseEntity<>(productos, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @DeleteMapping("/productos")
-  public ResponseEntity<HttpStatus> deleteAllProductos() {
+  public ResponseEntity<List<Producto>> deleteAllProductos() {
     try {
     	productoRepository.deleteAll();
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);

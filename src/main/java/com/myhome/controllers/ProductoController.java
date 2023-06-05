@@ -81,6 +81,7 @@ public class ProductoController {
   }
 
   @PutMapping("/productos/{id}")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
   public ResponseEntity<Producto> updateProducto(@PathVariable("id") String id, @RequestBody Producto producto) {
     Optional<Producto> productoData = productoRepository.findById(id);
 
@@ -94,10 +95,11 @@ public class ProductoController {
   }
 
   @DeleteMapping("/productos/{id}")
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
   public ResponseEntity<HttpStatus> deleteProducto(@PathVariable("id") String id) {
     try {
     	productoRepository.deleteById(id);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      return new ResponseEntity<>(HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }

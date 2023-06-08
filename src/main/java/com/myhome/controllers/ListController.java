@@ -82,9 +82,10 @@ public class ListController {
   }
 
   @PutMapping("/listas/{id}")
+  @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
   public ResponseEntity<Lista> updateLista(@PathVariable("id") String id, @RequestBody ListaRequest lista) {
     Optional<Lista> listaData = listRepository.findById(id);
-        
+    System.out.println(lista);
     if (listaData.isPresent()) {
       Lista _lista = listaData.get();
       _lista.setNombre(lista.getNombre());  

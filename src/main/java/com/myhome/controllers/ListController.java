@@ -109,13 +109,22 @@ public class ListController {
   }
 
   @DeleteMapping("/listas/{id}")
-  public ResponseEntity<HttpStatus> deleteLista(@PathVariable("id") String id) {
-    try {
-      listRepository.deleteById(id);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  public ResponseEntity<List<Lista>> deleteLista(@PathVariable("id") String id) {
+	  try {
+	      listRepository.deleteById(id);
+	      
+	      List<Lista> listas = new ArrayList<Lista>();	      
+	      listRepository.findAll().forEach(listas::add);
+	      
+	      if (listas.isEmpty()) {
+	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	      }
+
+	      return new ResponseEntity<>(listas, HttpStatus.OK);
+	    } catch (Exception e) {
+	      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+
   }
 
   @DeleteMapping("/listas")

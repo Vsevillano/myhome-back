@@ -72,10 +72,11 @@ public class ListController {
   }
 
   @PostMapping("/listas")
+  @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
   public ResponseEntity<Lista> createLista(@RequestBody Lista lista) {
     try {
     	Lista _lista = listRepository.save(new Lista(lista.getNombre()));
-      return new ResponseEntity<>(_lista, HttpStatus.CREATED);
+      return new ResponseEntity<>(_lista, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }

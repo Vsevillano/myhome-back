@@ -81,15 +81,26 @@ public class ProductoController {
 
   @PutMapping("/productos/{id}")
   @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-  public ResponseEntity<Producto> updateProducto(@PathVariable("id") String id, @RequestBody Producto producto) {
+  public ResponseEntity<List<Producto>> updateProducto(@PathVariable("id") String id, @RequestBody Producto producto) {
     Optional<Producto> productoData = productoRepository.findById(id);
-
-    if (productoData.isPresent()) {
-    Producto _producto = productoData.get();
-    	_producto.setNombre(producto.getNombre());           
-      return new ResponseEntity<>(productoRepository.save(_producto), HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    
+    try {
+    	 Producto _producto = productoData.get();
+     	_producto.setNombre(producto.getNombre());
+     	productoRepository.save(_producto);
+	    List<Producto> productos = new ArrayList<Producto>();
+	    
+	    for (Producto producto_a: productoRepository.findAll()) {       	        
+	    		productos.add(producto_a);        	
+	    }
+	          	       
+	    if (productos.isEmpty()) {
+	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	    }
+	
+	    return new ResponseEntity<>(productos, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

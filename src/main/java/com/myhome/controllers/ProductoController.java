@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.myhome.models.Producto;
-import com.myhome.models.Tarea;
 import com.myhome.repository.ProductoRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)

@@ -1,6 +1,5 @@
 package com.myhome.controllers;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.myhome.excpetion.TokenRefreshException;
@@ -32,7 +30,6 @@ import com.myhome.models.EmailDetails;
 import com.myhome.models.RefreshToken;
 import com.myhome.models.Role;
 import com.myhome.models.User;
-import com.myhome.models.Usuario;
 import com.myhome.payload.request.ChangePasswordRequest;
 import com.myhome.payload.request.LoginRequest;
 import com.myhome.payload.request.SignupRequest;
@@ -90,7 +87,7 @@ public class AuthController {
 		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
 		return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-				userDetails.getUsername(), userDetails.getEmail(), roles));
+				userDetails.getUsername(), userDetails.getEmail(), userDetails.getTelefono(), roles, userDetails.getActivo()));
 	}
 
 	@PostMapping("/refreshtoken")
@@ -119,7 +116,7 @@ public class AuthController {
 
 		// Create new user's account
 		User user = new User(signUpRequest.getNombre(), signUpRequest.getApellidos(), signUpRequest.getUsername(),
-				signUpRequest.getEmail(), signUpRequest.getTelefono(), encoder.encode(signUpRequest.getPassword()));
+				signUpRequest.getEmail(), signUpRequest.getTelefono(), encoder.encode(signUpRequest.getPassword()), true);
 
 		Set<String> strRoles = signUpRequest.getRoles();
 		Set<Role> roles = new HashSet<>();
@@ -154,13 +151,13 @@ public class AuthController {
 	}
 
 	@PostMapping("/reset")
-	public ResponseEntity<Usuario> resetUserPassword(@RequestBody EmailDetails details) {
+	public ResponseEntity<User> resetUserPassword(@RequestBody EmailDetails details) {
 		try {
 			if (userRepository.existsByEmail(details.getRecipient())) {
 				Optional<User> user = userRepository.findByEmail(details.getRecipient());
 				String token = jwtUtils.generateTokenFromUsername(user.get().getUsername());
 				details.setMsgBody("Recuperar contraseña http://localhost:3000/newPassword/" + token);				
-				String status = emailService.sendSimpleMail(details);				
+				emailService.sendSimpleMail(details);				
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			}
 
@@ -172,7 +169,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/changepassword")
-	public ResponseEntity<Usuario> changepassword(@RequestBody ChangePasswordRequest details) {
+	public ResponseEntity<User> changepassword(@RequestBody ChangePasswordRequest details) {
 		try {
 			
 		    Optional<User> usuarioData = userRepository.findByUsername(details.getUsername());

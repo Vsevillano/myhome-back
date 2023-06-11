@@ -40,6 +40,9 @@ public class User {
 	@NotBlank
 	@Size(max = 120)
 	private String password;
+	
+	private boolean activo;
+
 
 	@DBRef
 	private Set<Role> roles = new HashSet<>();
@@ -47,14 +50,17 @@ public class User {
 	public User() {
 	}
 
-	public User(String nombre, String apellidos, String username, String email, String telefono, String password) {
+	public User(String nombre, String apellidos, String username, String email, String telefono, String password, boolean activo) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.username = username;
 		this.email = email;
 		this.telefono = telefono;
 		this.password = password;
+		this.activo = activo;
 	}
+
+
 
 	public String getId() {
 		return id;
@@ -120,11 +126,22 @@ public class User {
 		this.telefono = telefono;
 	}
 
+	public boolean getActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", username=" + username
-				+ ", email=" + email + ", telefono=" + telefono + ", password=" + password + ", roles=" + roles + "]";
+				+ ", email=" + email + ", telefono=" + telefono + ", activo=" + activo
+				+ ", roles=" + roles + "]";
 	}
+	
+
 	
 	
 }

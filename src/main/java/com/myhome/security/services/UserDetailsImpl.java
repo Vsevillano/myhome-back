@@ -20,26 +20,32 @@ public class UserDetailsImpl implements UserDetails {
 	private String username;
 
 	private String email;
+	
+	private String telefono;
+	
+	private boolean activo;
 
 	@JsonIgnore
 	private String password;
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserDetailsImpl(String id, String username, String email, String password,
+	public UserDetailsImpl(String id, String username, String email, String password, String telefono,
 			Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
 		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.telefono = telefono;
 		this.authorities = authorities;
+		
 	}
 
 	public static UserDetailsImpl build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
 
-		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), authorities);
+		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), user.getTelefono(), authorities);
 	}
 
 	@Override
@@ -54,6 +60,14 @@ public class UserDetailsImpl implements UserDetails {
 	public String getEmail() {
 		return email;
 	}
+	
+	public String getTelefono() {
+		return telefono;
+	}
+	
+	public boolean getActivo() {
+		return activo;
+	}
 
 	@Override
 	public String getPassword() {
@@ -64,6 +78,8 @@ public class UserDetailsImpl implements UserDetails {
 	public String getUsername() {
 		return username;
 	}
+	
+
 
 	@Override
 	public boolean isAccountNonExpired() {

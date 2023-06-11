@@ -30,7 +30,7 @@ public class UserDetailsImpl implements UserDetails {
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserDetailsImpl(String id, String username, String email, String password, String telefono,
+	public UserDetailsImpl(String id, String username, String email, String password, String telefono, boolean activo,
 			Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
 		this.username = username;
@@ -38,14 +38,14 @@ public class UserDetailsImpl implements UserDetails {
 		this.password = password;
 		this.telefono = telefono;
 		this.authorities = authorities;
-		
+		this.activo = activo;
 	}
 
 	public static UserDetailsImpl build(User user) {
 		List<GrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
 
-		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), user.getTelefono(), authorities);
+		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), user.getTelefono(), user.getActivo(), authorities);
 	}
 
 	@Override
